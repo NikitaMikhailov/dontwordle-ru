@@ -21,6 +21,8 @@ let state  = null;
 
 // ── Init ───────────────────────────────────────────────────────────────────
 async function init() {
+  loadTheme();
+
   const raw = await fetch(WORDS_URL).then(r => r.json());
   words   = deterministicShuffle(raw, 1337);
   wordSet = new Set(words);
@@ -91,6 +93,16 @@ function loadHardMode() {
 }
 function saveHardMode(v) {
   localStorage.setItem('nevordl_hard', v ? '1' : '0');
+}
+
+function loadTheme() {
+  const dark = localStorage.getItem('nevordl_dark') === '1';
+  document.body.classList.toggle('dark', dark);
+  return dark;
+}
+function saveTheme(dark) {
+  localStorage.setItem('nevordl_dark', dark ? '1' : '0');
+  document.body.classList.toggle('dark', dark);
 }
 
 // ── Stats ──────────────────────────────────────────────────────────────────
@@ -461,6 +473,7 @@ function render() {
 
   // Hard mode toggle
   document.getElementById('toggle-hard-mode').checked = state.hardMode;
+  document.getElementById('toggle-dark-mode').checked = document.body.classList.contains('dark');
 }
 
 function renderActionArea() {
@@ -637,6 +650,12 @@ function bindEvents() {
     saveState();
     render();
   };
+
+  // Dark mode toggle
+  document.getElementById('toggle-dark-mode').onchange = e => saveTheme(e.target.checked);
+
+  // Privacy modal
+  document.getElementById('btn-privacy').onclick = () => openModal('privacy');
 
   // Show how-to-play on first ever visit
   if (!localStorage.getItem('nevordl_visited')) {
