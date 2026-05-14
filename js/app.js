@@ -12,8 +12,9 @@ const store = {
 // ── Constants ──────────────────────────────────────────────────────────────
 const WORDS_URL   = 'data/words.json';
 const START_DATE  = new Date('2026-05-14T00:00:00');
-const STORE_GAME  = 'nevordl_game';
-const STORE_STATS = 'nevordl_stats';
+const STORE_GAME     = 'nevordl_game';
+const STORE_PRACTICE = 'nevordl_practice';
+const STORE_STATS    = 'nevordl_stats';
 
 const KB_ROWS = [
   ['й','ц','у','к','е','н','г','ш','щ','з','х','ъ'],
@@ -70,8 +71,11 @@ function defaultState() {
 }
 
 // ── Persist ────────────────────────────────────────────────────────────────
-function saveState()  {
-  if (state.isPractice) return;
+function saveState() {
+  if (state.isPractice) {
+    store.set(STORE_PRACTICE, JSON.stringify(state));
+    return;
+  }
   const { target, ...toSave } = state;
   store.set(STORE_GAME, JSON.stringify(toSave));
 }
@@ -82,10 +86,22 @@ function loadState() {
     if (saved.puzzleIndex === puzzleIndex()) {
       saved.target = todayWord();
       state = saved;
+      if (state.status !== 'playing') {
+        const practice = loadPracticeState();
+        if (practice) { state = practice; }
+      }
       return;
     }
   }
   state = defaultState();
+}
+function loadPracticeState() {
+  try {
+    const raw = store.get(STORE_PRACTICE);
+    if (!raw) return null;
+    const p = JSON.parse(raw);
+    return (p && p.isPractice && p.status === 'playing') ? p : null;
+  } catch { return null; }
 }
 
 function loadHardMode() {
@@ -241,6 +257,7 @@ function playAgain() {
     isPractice:   true,
   };
   buildBoard();
+  saveState();
   render();
   updateKeyColors();
   toast('Новая игра — практика');
