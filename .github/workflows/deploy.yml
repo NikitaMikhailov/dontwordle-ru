@@ -15,4 +15,8 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: sudo nevordli-update
+          script: |
+            cd /var/www/dontwordle.ru
+            git pull origin main
+            sudo docker compose up --build -d
+            sudo docker image prune -f
