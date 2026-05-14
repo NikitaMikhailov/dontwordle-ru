@@ -1,6 +1,6 @@
 // ── Constants ──────────────────────────────────────────────────────────────
 const WORDS_URL   = 'data/words.json';
-const START_DATE  = new Date('2025-05-14');
+const START_DATE  = new Date('2025-05-14T00:00:00');
 const STORE_GAME  = 'nevordl_game';
 const STORE_STATS = 'nevordl_stats';
 const MAX_GUESSES = 6;
@@ -77,13 +77,18 @@ function defaultState() {
 // ── Persist ────────────────────────────────────────────────────────────────
 function saveState()  {
   if (state.isPractice) return;
-  localStorage.setItem(STORE_GAME, JSON.stringify(state));
+  const { target, ...toSave } = state;
+  localStorage.setItem(STORE_GAME, JSON.stringify(toSave));
 }
 function loadState() {
   const raw = localStorage.getItem(STORE_GAME);
   if (raw) {
     const saved = JSON.parse(raw);
-    if (saved.puzzleIndex === puzzleIndex()) { state = saved; return; }
+    if (saved.puzzleIndex === puzzleIndex()) {
+      saved.target = todayWord();
+      state = saved;
+      return;
+    }
   }
   state = defaultState();
 }
