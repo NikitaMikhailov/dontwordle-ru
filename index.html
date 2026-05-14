@@ -139,6 +139,47 @@
             <span class="toggle-slider"></span>
           </label>
         </div>
+        <div class="setting-row">
+          <div>
+            <div class="setting-title">Тёмная тема</div>
+            <div class="setting-desc">Переключить оформление</div>
+          </div>
+          <label class="toggle">
+            <input type="checkbox" id="toggle-dark-mode">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+        <div class="setting-divider"></div>
+        <div class="setting-link-row">
+          <span class="setting-title">Связь с автором</span>
+          <div class="setting-links">
+            <a href="mailto:mikhailov_nikita1997@icloud.com" class="setting-link">Email</a>
+            <a href="https://t.me/Nikita_Bear" target="_blank" rel="noopener" class="setting-link">Telegram</a>
+          </div>
+        </div>
+        <div class="setting-link-row">
+          <span class="setting-title">Политика конфиденциальности</span>
+          <button class="setting-link" id="btn-privacy">Открыть</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Privacy Policy Modal -->
+  <div class="modal-overlay" id="overlay-privacy">
+    <div class="modal" role="dialog" aria-modal="true">
+      <div class="modal-header">
+        <h2>Конфиденциальность</h2>
+        <button class="modal-close" data-close="privacy">✕</button>
+      </div>
+      <div class="modal-body">
+        <p>«Не вордли» не собирает и не передаёт никакие персональные данные.</p>
+        <p>Игровое состояние и статистика хранятся исключительно в <strong>localStorage</strong> вашего браузера — на устройстве, без отправки на сервер.</p>
+        <p>Сайт не использует аналитику, трекеры и сторонние скрипты.</p>
+        <p>По любым вопросам пишите:<br>
+          <a href="mailto:mikhailov_nikita1997@icloud.com">mikhailov_nikita1997@icloud.com</a><br>
+          <a href="https://t.me/Nikita_Bear" target="_blank" rel="noopener">@Nikita_Bear</a> в Telegram
+        </p>
       </div>
     </div>
   </div>
