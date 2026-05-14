@@ -410,6 +410,8 @@ function render() {
   // Hard mode toggle
   document.getElementById('toggle-hard-mode').checked = state.hardMode;
   document.getElementById('toggle-dark-mode').checked = document.body.classList.contains('dark');
+
+  updateKeyColors();
 }
 
 function renderActionArea() {
