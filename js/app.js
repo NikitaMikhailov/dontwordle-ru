@@ -1,12 +1,13 @@
+import { WORD_LEN, MAX_GUESSES, UNDOS_NORMAL, UNDOS_HARD,
+         deterministicShuffle, evaluate, satisfies,
+         constraintError, countValid,
+       } from './logic.js';
+
 // ── Constants ──────────────────────────────────────────────────────────────
 const WORDS_URL   = 'data/words.json';
 const START_DATE  = new Date('2025-05-14T00:00:00');
 const STORE_GAME  = 'nevordl_game';
 const STORE_STATS = 'nevordl_stats';
-const MAX_GUESSES = 6;
-const WORD_LEN    = 5;
-const UNDOS_NORMAL = 5;
-const UNDOS_HARD   = 2;
 
 const KB_ROWS = [
   ['й','ц','у','к','е','н','г','ш','щ','з','х','ъ'],
@@ -44,18 +45,6 @@ function puzzleIndex() {
 
 function todayWord() {
   return words[puzzleIndex() % words.length];
-}
-
-// ── Shuffle with fixed seed (Fisher-Yates + xorshift32) ───────────────────
-function deterministicShuffle(arr, seed) {
-  let s = seed >>> 0;
-  const rng = () => { s ^= s << 13; s ^= s >> 17; s ^= s << 5; return (s >>> 0) / 4294967296; };
-  const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(rng() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
 }
 
 // ── Default state ──────────────────────────────────────────────────────────
@@ -137,83 +126,6 @@ function recordResult(status) {
   saveStats(stats);
 }
 
-// ── Wordle evaluation ──────────────────────────────────────────────────────
-function evaluate(guess, target) {
-  const result = Array(WORD_LEN).fill('absent');
-  const tArr   = [...target];
-  const gArr   = [...guess];
-  // greens
-  for (let i = 0; i < WORD_LEN; i++) {
-    if (gArr[i] === tArr[i]) { result[i] = 'correct'; tArr[i] = null; gArr[i] = null; }
-  }
-  // yellows
-  for (let i = 0; i < WORD_LEN; i++) {
-    if (!gArr[i]) continue;
-    const j = tArr.indexOf(gArr[i]);
-    if (j !== -1) { result[i] = 'present'; tArr[j] = null; }
-  }
-  return result;
-}
-
-// ── Constraint checking ────────────────────────────────────────────────────
-function satisfies(word, guesses, evaluations) {
-  for (let gi = 0; gi < guesses.length; gi++) {
-    const g = guesses[gi], ev = evaluations[gi];
-    const info = {};
-    for (let i = 0; i < WORD_LEN; i++) {
-      const c = g[i], e = ev[i];
-      if (!info[c]) info[c] = { min: 0, exact: null, badPos: [] };
-      if (e === 'correct') { info[c].min++; }
-      else if (e === 'present') { info[c].min++; info[c].badPos.push(i); }
-      else { info[c].exact = info[c].min; }
-    }
-    for (let i = 0; i < WORD_LEN; i++) {
-      const c = g[i], e = ev[i];
-      if (e === 'correct' && word[i] !== c) return false;
-      if (e === 'present' && word[i] === c) return false;
-    }
-    for (const [c, v] of Object.entries(info)) {
-      const cnt = [...word].filter(x => x === c).length;
-      if (cnt < v.min) return false;
-      if (v.exact !== null && cnt !== v.exact) return false;
-    }
-  }
-  return true;
-}
-
-function countValid() {
-  return words.filter(w => w !== state.target && satisfies(w, state.guesses, state.evaluations)).length;
-}
-
-// Returns human-readable reason why word violates constraints, or null
-function constraintError(word) {
-  for (let gi = 0; gi < state.guesses.length; gi++) {
-    const g = state.guesses[gi], ev = state.evaluations[gi];
-    for (let i = 0; i < WORD_LEN; i++) {
-      const c = g[i], e = ev[i];
-      if (e === 'correct' && word[i] !== c)
-        return `Буква ${c.toUpperCase()} должна стоять на позиции ${i + 1}`;
-      if (e === 'present' && word[i] === c)
-        return `Буква ${c.toUpperCase()} не может стоять на позиции ${i + 1}`;
-    }
-    const info = {};
-    for (let i = 0; i < WORD_LEN; i++) {
-      const c = g[i], e = ev[i];
-      if (!info[c]) info[c] = { min: 0, exact: null };
-      if (e === 'correct' || e === 'present') info[c].min++;
-      else info[c].exact = info[c].min;
-    }
-    for (const [c, v] of Object.entries(info)) {
-      const cnt = [...word].filter(x => x === c).length;
-      if (cnt < v.min)
-        return `Буква ${c.toUpperCase()} должна встречаться минимум ${v.min} раз`;
-      if (v.exact !== null && cnt !== v.exact)
-        return `Буква ${c.toUpperCase()} должна встречаться ровно ${v.exact} раз`;
-    }
-  }
-  return null;
-}
-
 // ── Input handling ─────────────────────────────────────────────────────────
 function addLetter(ch) {
   if (state.status !== 'playing') return;
@@ -236,7 +148,7 @@ async function submitGuess() {
   if (word.length < WORD_LEN) { shakRow(state.guesses.length); toast('Недостаточно букв'); return; }
   if (!wordSet.has(word))     { shakRow(state.guesses.length); toast('Слово не найдено в словаре'); return; }
 
-  const err = constraintError(word);
+  const err = constraintError(word, state.guesses, state.evaluations);
   if (err) { shakRow(state.guesses.length); toast(err); return; }
 
   const ev     = evaluate(word, state.target);
@@ -258,7 +170,7 @@ async function submitGuess() {
     return;
   }
 
-  const valid = countValid();
+  const valid = countValid(words, state.target, state.guesses, state.evaluations);
   if (state.guesses.length >= MAX_GUESSES) {
     state.status = 'survived';
     if (!state.isPractice) recordResult('survived');
@@ -455,7 +367,7 @@ function setCounter(id, val, useColor) {
 function render() {
   // Counters
   const valid = (state.status === 'playing')
-    ? countValid()
+    ? countValid(words, state.target, state.guesses, state.evaluations)
     : words.filter(w => w !== state.target && satisfies(w, state.guesses, state.evaluations)).length;
   setCounter('valid-count', valid, true);
   setCounter('undo-count',  state.undosLeft, false);
