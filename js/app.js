@@ -73,7 +73,10 @@ function defaultState() {
 }
 
 // ── Persist ────────────────────────────────────────────────────────────────
-function saveState()  { localStorage.setItem(STORE_GAME,  JSON.stringify(state)); }
+function saveState()  {
+  if (state.isPractice) return;
+  localStorage.setItem(STORE_GAME, JSON.stringify(state));
+}
 function loadState() {
   const raw = localStorage.getItem(STORE_GAME);
   if (raw) {
@@ -231,25 +234,25 @@ async function submitGuess() {
 
   if (word === state.target) {
     state.status = 'wordled';
-    recordResult('wordled');
+    if (!state.isPractice) recordResult('wordled');
     saveState();
     render();
-    setTimeout(() => openModal('stats'), 1800);
+    if (!state.isPractice) setTimeout(() => openModal('stats'), 1800);
     return;
   }
 
   const valid = countValid();
   if (state.guesses.length >= MAX_GUESSES) {
     state.status = 'survived';
-    recordResult('survived');
+    if (!state.isPractice) recordResult('survived');
   } else if (valid === 0) {
     state.status = 'eliminated';
-    recordResult('eliminated');
+    if (!state.isPractice) recordResult('eliminated');
   }
 
   saveState();
   render();
-  if (state.status !== 'playing') setTimeout(() => openModal('stats'), 1800);
+  if (state.status !== 'playing' && !state.isPractice) setTimeout(() => openModal('stats'), 1800);
 }
 
 function doUndo() {
@@ -275,6 +278,30 @@ function doRandom() {
   const pick  = valid[Math.floor(Math.random() * valid.length)];
   state.current = pick;
   renderCurrentRow();
+  submitGuess();
+}
+
+function playAgain() {
+  const prevTarget = state.target;
+  const hardMode   = state.hardMode;
+  const valid      = words.filter(w => w !== prevTarget);
+  const target     = valid[Math.floor(Math.random() * valid.length)];
+  state = {
+    puzzleIndex:  -1,
+    target,
+    guesses:      [],
+    evaluations:  [],
+    current:      '',
+    status:       'playing',
+    undosLeft:    hardMode ? UNDOS_HARD : UNDOS_NORMAL,
+    undoHistory:  [],
+    hardMode,
+    isPractice:   true,
+  };
+  buildBoard();
+  render();
+  updateKeyColors();
+  toast('Новая игра — практика');
 }
 
 // ── Board ──────────────────────────────────────────────────────────────────
@@ -387,13 +414,43 @@ function updateKeyColors() {
 }
 
 // ── Render ─────────────────────────────────────────────────────────────────
+function setCounter(id, val, useColor) {
+  const el   = document.getElementById(id);
+  const prev = el.dataset.val !== undefined ? Number(el.dataset.val) : null;
+  el.textContent = val;
+  el.dataset.val = val;
+
+  if (useColor) {
+    el.classList.remove('count-ok', 'count-warn', 'count-danger');
+    if (val <= 20)       el.classList.add('count-danger');
+    else if (val <= 200) el.classList.add('count-warn');
+    else                 el.classList.add('count-ok');
+  }
+
+  if (prev !== null && prev !== val) {
+    el.classList.remove('tick');
+    void el.offsetWidth;
+    el.classList.add('tick');
+    el.addEventListener('animationend', () => el.classList.remove('tick'), { once: true });
+  }
+}
+
 function render() {
   // Counters
   const valid = (state.status === 'playing')
     ? countValid()
     : words.filter(w => w !== state.target && satisfies(w, state.guesses, state.evaluations)).length;
-  document.getElementById('valid-count').textContent = valid;
-  document.getElementById('undo-count').textContent  = state.undosLeft;
+  setCounter('valid-count', valid, true);
+  setCounter('undo-count',  state.undosLeft, false);
+
+  // Practice badge on title
+  const h1 = document.querySelector('header h1');
+  const badge = h1.querySelector('.practice-badge');
+  if (state.isPractice) {
+    if (!badge) h1.insertAdjacentHTML('beforeend', '<span class="practice-badge">практика</span>');
+  } else {
+    if (badge) badge.remove();
+  }
 
   // Board
   rebuildBoard();
@@ -407,6 +464,7 @@ function render() {
 }
 
 function renderActionArea() {
+  // Ensure undo-area exists
   let area = document.getElementById('undo-area');
   if (!area) {
     area = document.createElement('div');
@@ -415,31 +473,37 @@ function renderActionArea() {
   }
   area.innerHTML = '';
 
+  const panel = document.getElementById('result-panel');
+
   if (state.status !== 'playing') {
-    // result banner inside board area
-    let banner = document.getElementById('result-banner');
-    if (!banner) {
-      banner = document.createElement('div');
-      banner.id = 'result-banner';
-      document.getElementById('board-container').appendChild(banner);
-    }
+    // Show result panel, hide undo area
     const msgs = {
-      survived:   ['Отлично! Вы выжили! 🎉', `Загаданное слово: ${state.target.toUpperCase()}`],
-      wordled:    ['О нет! Вы случайно угадали! 😱', `Слово было: ${state.target.toUpperCase()}`],
-      eliminated: ['Слова закончились! 💀', `Слово было: ${state.target.toUpperCase()}`],
+      survived:   ['Вы выжили!', `Загаданное слово: ${state.target.toUpperCase()}`],
+      wordled:    ['Упс, угадали!', `Слово было: ${state.target.toUpperCase()}`],
+      eliminated: ['Слова закончились!', `Слово было: ${state.target.toUpperCase()}`],
     };
     const [title, sub] = msgs[state.status] || ['', ''];
-    banner.innerHTML = `
+    const statsBtn = state.isPractice
+      ? ''
+      : `<button class="btn-primary" id="banner-stats-btn">Статистика</button>`;
+    panel.innerHTML = `
       <div class="result-title">${title}</div>
       <div class="result-word">${sub}</div>
       <div class="result-actions">
-        <button class="btn-primary" id="banner-stats-btn">Статистика</button>
+        ${statsBtn}
         <button class="btn-primary" id="banner-share-btn">Поделиться</button>
+        <button class="btn-undo" id="banner-again-btn">Сыграть снова</button>
       </div>`;
-    document.getElementById('banner-stats-btn').onclick = () => { renderStats(); openModal('stats'); };
+    if (!state.isPractice) {
+      document.getElementById('banner-stats-btn').onclick = () => { renderStats(); openModal('stats'); };
+    }
     document.getElementById('banner-share-btn').onclick = shareResult;
+    document.getElementById('banner-again-btn').onclick = playAgain;
+    panel.classList.remove('hidden');
     return;
   }
+
+  panel.classList.add('hidden');
 
   if (state.guesses.length === 0) {
     const rndBtn = document.createElement('button');
