@@ -3,6 +3,12 @@ import { WORD_LEN, MAX_GUESSES, UNDOS_NORMAL, UNDOS_HARD,
          constraintError, countValid,
        } from './logic.js';
 
+// ── Safe localStorage (some WebViews throw SecurityError) ─────────────────
+const store = {
+  get(k)    { try { return localStorage.getItem(k); }    catch { return null; } },
+  set(k, v) { try { localStorage.setItem(k, v); }        catch { /* noop */ } },
+};
+
 // ── Constants ──────────────────────────────────────────────────────────────
 const WORDS_URL   = 'data/words.json';
 const START_DATE  = new Date('2026-05-14T00:00:00');
@@ -67,10 +73,10 @@ function defaultState() {
 function saveState()  {
   if (state.isPractice) return;
   const { target, ...toSave } = state;
-  localStorage.setItem(STORE_GAME, JSON.stringify(toSave));
+  store.set(STORE_GAME, JSON.stringify(toSave));
 }
 function loadState() {
-  const raw = localStorage.getItem(STORE_GAME);
+  const raw = store.get(STORE_GAME);
   if (raw) {
     const saved = JSON.parse(raw);
     if (saved.puzzleIndex === puzzleIndex()) {
@@ -83,26 +89,26 @@ function loadState() {
 }
 
 function loadHardMode() {
-  return localStorage.getItem('nevordl_hard') === '1';
+  return store.get('nevordl_hard') === '1';
 }
 function saveHardMode(v) {
-  localStorage.setItem('nevordl_hard', v ? '1' : '0');
+  store.set('nevordl_hard', v ? '1' : '0');
 }
 
 function loadSwapKeys() {
-  return localStorage.getItem('nevordl_swap_keys') === '1';
+  return store.get('nevordl_swap_keys') === '1';
 }
 function saveSwapKeys(v) {
-  localStorage.setItem('nevordl_swap_keys', v ? '1' : '0');
+  store.set('nevordl_swap_keys', v ? '1' : '0');
 }
 
 function loadTheme() {
-  const dark = localStorage.getItem('nevordl_dark') === '1';
+  const dark = store.get('nevordl_dark') === '1';
   document.body.classList.toggle('dark', dark);
   return dark;
 }
 function saveTheme(dark) {
-  localStorage.setItem('nevordl_dark', dark ? '1' : '0');
+  store.set('nevordl_dark', dark ? '1' : '0');
   document.body.classList.toggle('dark', dark);
 }
 
@@ -111,10 +117,10 @@ function defaultStats() {
   return { played: 0, survived: 0, eliminated: 0, wordled: 0, streak: 0, maxStreak: 0, lastPuzzle: -1 };
 }
 function loadStats() {
-  try { return JSON.parse(localStorage.getItem(STORE_STATS)) || defaultStats(); }
+  try { return JSON.parse(store.get(STORE_STATS)) || defaultStats(); }
   catch { return defaultStats(); }
 }
-function saveStats(stats) { localStorage.setItem(STORE_STATS, JSON.stringify(stats)); }
+function saveStats(stats) { store.set(STORE_STATS, JSON.stringify(stats)); }
 
 function recordResult(status) {
   const stats = loadStats();
@@ -596,8 +602,8 @@ function bindEvents() {
   document.getElementById('btn-privacy').onclick = () => openModal('privacy');
 
   // Show how-to-play on first ever visit
-  if (!localStorage.getItem('nevordl_visited')) {
-    localStorage.setItem('nevordl_visited', '1');
+  if (!store.get('nevordl_visited')) {
+    store.set('nevordl_visited', '1');
     setTimeout(() => openModal('how-to-play'), 300);
   }
 }
