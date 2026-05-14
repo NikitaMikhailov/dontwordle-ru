@@ -589,6 +589,7 @@ function bindEvents() {
   document.getElementById('toggle-swap-keys').onchange = e => {
     saveSwapKeys(e.target.checked);
     buildKeyboard();
+    updateKeyColors();
   };
 
   // Privacy modal
