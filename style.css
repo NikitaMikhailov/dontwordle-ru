@@ -147,23 +147,26 @@ main {
 #board-container {
   display: flex;
   justify-content: center;
+  align-items: center;
   flex: 1;
+  width: 100%;
 }
 #board {
+  --ts: min(var(--tile-size), calc((min(100vw, 500px) - 32px - 4 * var(--tile-gap)) / 5));
   display: grid;
-  grid-template-rows: repeat(6, var(--tile-size));
-  grid-template-columns: repeat(5, var(--tile-size));
+  grid-template-rows: repeat(6, var(--ts));
+  grid-template-columns: repeat(5, var(--ts));
   gap: var(--tile-gap);
 }
 
 .tile {
-  width: var(--tile-size);
-  height: var(--tile-size);
+  width: var(--ts);
+  height: var(--ts);
   border: 2px solid var(--border);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.75rem;
+  font-size: calc(var(--ts, 60px) * 0.5);
   font-weight: 700;
   text-transform: uppercase;
   user-select: none;
@@ -211,25 +214,26 @@ main {
 /* ── Keyboard ── */
 #keyboard {
   width: 100%;
+  max-width: 500px;
   display: flex;
   flex-direction: column;
   gap: 6px;
-  align-items: center;
+  padding: 0 6px;
 }
 .key-row {
   display: flex;
-  gap: 5px;
-  justify-content: center;
+  gap: 4px;
 }
 .key {
+  flex: 1;
+  min-width: 0;
   height: 56px;
-  min-width: 32px;
-  padding: 0 4px;
+  padding: 0 2px;
   border: none;
   border-radius: 6px;
   background: var(--key-bg);
   color: var(--key-text);
-  font-size: 0.9rem;
+  font-size: clamp(0.6rem, 2.5vw, 0.9rem);
   font-weight: 600;
   cursor: pointer;
   text-transform: uppercase;
@@ -239,8 +243,9 @@ main {
   justify-content: center;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
+  white-space: nowrap;
 }
-.key.wide { min-width: 56px; font-size: 0.75rem; }
+.key.wide { flex: 1.6; font-size: clamp(0.55rem, 2.2vw, 0.78rem); }
 .key.correct  { background: var(--green);  color: #fff; }
 .key.present  { background: var(--yellow); color: #fff; }
 .key.absent   { background: var(--key-gray); color: #fff; }
@@ -460,13 +465,18 @@ main {
 
 /* ── Responsive ── */
 @media (max-height: 700px) {
-  :root { --tile-size: 50px; }
+  :root { --tile-size: 48px; --tile-gap: 4px; }
   .key { height: 46px; }
   #counters { gap: 20px; }
   .counter-value { font-size: 1.6rem; }
+  main { gap: 8px; padding: 8px 6px 4px; }
 }
-@media (max-width: 380px) {
-  :root { --tile-size: 52px; }
-  .key { min-width: 28px; font-size: 0.8rem; }
-  .key.wide { min-width: 48px; }
+@media (max-height: 600px) {
+  :root { --tile-size: 42px; --tile-gap: 4px; }
+  .key { height: 40px; }
+  .counter-value { font-size: 1.4rem; }
+}
+/* Tall phones — give board more room */
+@media (min-height: 800px) {
+  :root { --tile-size: 65px; }
 }

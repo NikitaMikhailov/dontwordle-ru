@@ -463,7 +463,7 @@ function renderActionArea() {
 function shareResult() {
   const statusText = { survived: 'ВЫЖИЛ', wordled: 'ВОРДЛНУЛ', eliminated: 'ВЫБЫЛ' };
   const emoji = { correct: '🟩', present: '🟨', absent: '⬜' };
-  const lines = [`Не Вордл #${state.puzzleIndex + 1} — ${statusText[state.status] || ''}`];
+  const lines = [`Не вордли #${state.puzzleIndex + 1} — ${statusText[state.status] || ''}`];
   for (const ev of state.evaluations) {
     lines.push(ev.map(e => emoji[e]).join(''));
   }
