@@ -122,7 +122,16 @@ main {
   font-size: 2rem;
   font-weight: 700;
   line-height: 1;
+  transition: color 0.4s ease;
 }
+.counter-value.count-ok     { color: var(--green); }
+.counter-value.count-warn   { color: var(--yellow); }
+.counter-value.count-danger { color: #e53e3e; }
+@keyframes count-tick {
+  0%   { transform: translateY(-6px); opacity: 0.4; }
+  100% { transform: translateY(0);    opacity: 1; }
+}
+.counter-value.tick { animation: count-tick 0.22s ease; }
 .counter-label {
   font-size: 0.7rem;
   text-transform: uppercase;
@@ -376,6 +385,7 @@ main {
   letter-spacing: 0.08em;
   margin-top: 4px;
 }
+.htp-examples { display: flex; flex-direction: column; gap: 10px; }
 .htp-example { border-left: 3px solid var(--border); padding-left: 12px; }
 .htp-warning {
   background: rgba(201,180,88,0.15);
