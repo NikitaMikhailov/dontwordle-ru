@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Не Вордл — ежедневная игра со словами</title>
+  <meta name="description" content="Не Вордл — бесплатная ежедневная игра со словами. Как Вордл, но цель — НЕ угадать загаданное слово. Шесть попыток, чтобы выжить.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <div class="header-inner">
+      <button class="icon-btn" id="btn-how-to-play" title="Как играть">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      </button>
+      <h1>Не Вордл</h1>
+      <div class="header-right">
+        <button class="icon-btn" id="btn-stats" title="Статистика">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        </button>
+        <button class="icon-btn" id="btn-settings" title="Настройки">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="header-border"></div>
+  </header>
+
+  <div id="toast-container"></div>
+
+  <main>
+    <div id="counters">
+      <div class="counter">
+        <div class="counter-value" id="valid-count">—</div>
+        <div class="counter-label">Осталось слов</div>
+      </div>
+      <div class="counter">
+        <div class="counter-value" id="undo-count">—</div>
+        <div class="counter-label">Отмен осталось</div>
+      </div>
+    </div>
+
+    <div id="board-container">
+      <div id="board"></div>
+    </div>
+
+    <div id="keyboard">
+      <div class="key-row" id="key-row-1"></div>
+      <div class="key-row" id="key-row-2"></div>
+      <div class="key-row" id="key-row-3"></div>
+    </div>
+  </main>
+
+  <!-- How to Play Modal -->
+  <div class="modal-overlay" id="overlay-how-to-play">
+    <div class="modal" role="dialog" aria-modal="true">
+      <div class="modal-header">
+        <h2>Как играть</h2>
+        <button class="modal-close" data-close="how-to-play">✕</button>
+      </div>
+      <div class="modal-body">
+        <p>Не Вордл — это Вордл наоборот. Цель — <strong>НЕ угадать</strong> загаданное слово.</p>
+        <p>У вас <strong>6 попыток</strong>. После каждой попытки буквы окрашиваются:</p>
+        <div class="htp-examples">
+          <div class="htp-example">
+            <div class="htp-tiles">
+              <div class="tile correct">Д</div><div class="tile">О</div><div class="tile">М</div><div class="tile">И</div><div class="tile">К</div>
+            </div>
+            <p><strong>Зелёная:</strong> буква стоит на правильном месте — в <em>следующих</em> словах она <strong>обязана</strong> быть на той же позиции.</p>
+          </div>
+          <div class="htp-example">
+            <div class="htp-tiles">
+              <div class="tile">Д</div><div class="tile present">О</div><div class="tile">М</div><div class="tile">И</div><div class="tile">К</div>
+            </div>
+            <p><strong>Жёлтая:</strong> буква есть в слове, но не на этом месте — в следующих словах она <strong>обязана</strong> стоять на другой позиции.</p>
+          </div>
+          <div class="htp-example">
+            <div class="htp-tiles">
+              <div class="tile">Д</div><div class="tile">О</div><div class="tile absent">М</div><div class="tile">И</div><div class="tile">К</div>
+            </div>
+            <p><strong>Серая:</strong> буквы нет в слове — её больше <strong>нельзя</strong> использовать.</p>
+          </div>
+        </div>
+        <p>Вверху показывается счётчик <strong>«Осталось слов»</strong> — количество слов, которые ещё подходят по всем подсказкам. С каждым ходом он уменьшается.</p>
+        <p>Если слов остаётся мало, используйте <strong>Отмену</strong> — она откатывает последнюю попытку. Отмен ограниченное количество.</p>
+        <p class="htp-warning">⚠️ Если вы случайно введёте загаданное слово — игра немедленно заканчивается, даже если отмены ещё есть!</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats Modal -->
+  <div class="modal-overlay" id="overlay-stats">
+    <div class="modal" role="dialog" aria-modal="true">
+      <div class="modal-header">
+        <h2>Статистика</h2>
+        <button class="modal-close" data-close="stats">✕</button>
+      </div>
+      <div class="modal-body">
+        <div id="stats-grid">
+          <div class="stat-block"><div class="stat-val" id="stat-played">0</div><div class="stat-label">Сыграно</div></div>
+          <div class="stat-block"><div class="stat-val" id="stat-win-pct">0</div><div class="stat-label">Выжил %</div></div>
+          <div class="stat-block"><div class="stat-val" id="stat-streak">0</div><div class="stat-label">Серия</div></div>
+          <div class="stat-block"><div class="stat-val" id="stat-max-streak">0</div><div class="stat-label">Макс. серия</div></div>
+        </div>
+        <h3>Распределение результатов</h3>
+        <div id="result-dist">
+          <div class="dist-row"><span class="dist-label survived-label">Выжил</span><div class="dist-bar-wrap"><div class="dist-bar survived-bar" id="bar-survived"><span>0</span></div></div></div>
+          <div class="dist-row"><span class="dist-label eliminated-label">Выбыл</span><div class="dist-bar-wrap"><div class="dist-bar eliminated-bar" id="bar-eliminated"><span>0</span></div></div></div>
+          <div class="dist-row"><span class="dist-label wordled-label">Вордлнул</span><div class="dist-bar-wrap"><div class="dist-bar wordled-bar" id="bar-wordled"><span>0</span></div></div></div>
+        </div>
+        <div id="stats-footer" class="hidden">
+          <div id="next-game-section">
+            <div class="next-label">Следующая игра</div>
+            <div id="countdown">—</div>
+          </div>
+          <button id="btn-share" class="btn-primary">Поделиться</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings Modal -->
+  <div class="modal-overlay" id="overlay-settings">
+    <div class="modal" role="dialog" aria-modal="true">
+      <div class="modal-header">
+        <h2>Настройки</h2>
+        <button class="modal-close" data-close="settings">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="setting-row">
+          <div>
+            <div class="setting-title">Сложный режим</div>
+            <div class="setting-desc">Только 2 отмены вместо 5</div>
+          </div>
+          <label class="toggle">
+            <input type="checkbox" id="toggle-hard-mode">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/app.js" type="module"></script>
+</body>
+</html>
