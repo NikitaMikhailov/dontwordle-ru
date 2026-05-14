@@ -16,7 +16,6 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd /var/www/dontwordle.ru
-            git pull origin main
-            sudo docker compose up --build -d
-            sudo docker image prune -f
+            sudo git -C /var/www/dontwordle.ru pull origin main
+            cd /var/www/dontwordle.ru && docker compose up --build -d
+            docker image prune -f
