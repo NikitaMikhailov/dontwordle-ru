@@ -593,12 +593,15 @@ function bindEvents() {
   document.getElementById('toggle-dark-mode').onchange = e => saveTheme(e.target.checked);
 
   // Swap keys toggle
-  document.getElementById('toggle-swap-keys').checked = loadSwapKeys();
-  document.getElementById('toggle-swap-keys').onchange = e => {
+  const swapCb = document.getElementById('toggle-swap-keys');
+  swapCb.checked = loadSwapKeys();
+  const onSwapChange = e => {
     saveSwapKeys(e.target.checked);
     buildKeyboard();
     updateKeyColors();
   };
+  swapCb.addEventListener('change', onSwapChange);
+  swapCb.addEventListener('input',  onSwapChange);
 
   // Privacy modal
   document.getElementById('btn-privacy').onclick = () => openModal('privacy');
