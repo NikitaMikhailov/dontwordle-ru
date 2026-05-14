@@ -14,7 +14,7 @@
       <button class="icon-btn" id="btn-how-to-play" title="Как играть">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><circle cx="12" cy="17" r="1" fill="currentColor" stroke="none"/></svg>
       </button>
-      <h1>Не вордли</h1>
+      <h1>Не вордли<span class="puzzle-num" id="puzzle-num"></span></h1>
       <div class="header-right">
         <button class="icon-btn" id="btn-stats" title="Статистика">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
@@ -147,6 +147,16 @@
           </div>
           <label class="toggle">
             <input type="checkbox" id="toggle-dark-mode">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+        <div class="setting-row">
+          <div>
+            <div class="setting-title">Переставить ВВОД и ⌫</div>
+            <div class="setting-desc">⌫ слева, ВВОД справа</div>
+          </div>
+          <label class="toggle">
+            <input type="checkbox" id="toggle-swap-keys">
             <span class="toggle-slider"></span>
           </label>
         </div>
