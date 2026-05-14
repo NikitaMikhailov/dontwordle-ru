@@ -16,18 +16,6 @@
   --tile-gap: 5px;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #121213;
-    --text: #ffffff;
-    --border: #3a3a3c;
-    --border-filled: #565758;
-    --header-bg: #121213;
-    --key-bg: #818384;
-    --key-text: #ffffff;
-    --modal-bg: #1a1a1b;
-  }
-}
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -250,26 +238,44 @@ main {
 .key.present  { background: var(--yellow); color: #fff; }
 .key.absent   { background: var(--key-gray); color: #fff; }
 
-/* ── Game result banner ── */
-#result-banner {
+/* ── Game result panel ── */
+#result-panel {
+  width: 100%;
   text-align: center;
-  padding: 12px;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
   animation: toast-in 0.3s ease;
 }
-#result-banner .result-title {
-  font-size: 1.2rem;
+#result-panel .result-title {
+  font-size: 1.25rem;
   font-weight: 700;
   margin-bottom: 4px;
 }
-#result-banner .result-word {
+#result-panel .result-word {
   font-size: 0.9rem;
-  opacity: 0.8;
+  opacity: 0.75;
+  margin-bottom: 12px;
 }
-#result-banner .result-actions {
-  margin-top: 10px;
+#result-panel .result-actions {
   display: flex;
   gap: 8px;
   justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* ── Practice badge ── */
+.practice-badge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  background: var(--yellow);
+  color: #fff;
+  padding: 2px 7px;
+  border-radius: 20px;
+  margin-left: 8px;
+  vertical-align: middle;
 }
 
 /* ── Undo button ── */
