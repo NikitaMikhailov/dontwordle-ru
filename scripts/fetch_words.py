@@ -22,13 +22,13 @@ SESSION = requests.Session()
 SESSION.headers.update(HEADERS)
 
 
-def fetch_batch(offset: int) -> dict:
+def fetch_batch(offset: int, part_speech: str = "существительное") -> dict:
     params = [
         ("letter[]", ""), ("letter[]", ""), ("letter[]", ""),
         ("letter[]", ""), ("letter[]", ""),
         ("including_letters", ""),
         ("excluding_letters", ""),
-        ("part_speech", ""),
+        ("part_speech", part_speech),
         ("words_list_sort", "asc"),
         ("offset", str(offset)),
     ]
