@@ -5,7 +5,7 @@ import { WORD_LEN, MAX_GUESSES, UNDOS_NORMAL, UNDOS_HARD,
 
 // ── Constants ──────────────────────────────────────────────────────────────
 const WORDS_URL   = 'data/words.json';
-const START_DATE  = new Date('2025-05-14T00:00:00');
+const START_DATE  = new Date('2026-05-14T00:00:00');
 const STORE_GAME  = 'nevordl_game';
 const STORE_STATS = 'nevordl_stats';
 
@@ -87,6 +87,13 @@ function loadHardMode() {
 }
 function saveHardMode(v) {
   localStorage.setItem('nevordl_hard', v ? '1' : '0');
+}
+
+function loadSwapKeys() {
+  return localStorage.getItem('nevordl_swap_keys') === '1';
+}
+function saveSwapKeys(v) {
+  localStorage.setItem('nevordl_swap_keys', v ? '1' : '0');
 }
 
 function loadTheme() {
@@ -306,10 +313,13 @@ function flipRow(row, word, ev) {
 
 // ── Keyboard ───────────────────────────────────────────────────────────────
 function buildKeyboard() {
+  const swap = loadSwapKeys();
   KB_ROWS.forEach((row, i) => {
     const el = document.getElementById(`key-row-${i + 1}`);
     el.innerHTML = '';
-    row.forEach(k => {
+    let keys = row;
+    if (i === 2 && swap) keys = ['⌫', ...row.slice(1, -1), 'ВВОД'];
+    keys.forEach(k => {
       const btn = document.createElement('button');
       btn.className = 'key' + (k.length > 1 ? ' wide' : '');
       btn.textContent = k.toUpperCase();
@@ -372,13 +382,16 @@ function render() {
   setCounter('valid-count', valid, true);
   setCounter('undo-count',  state.undosLeft, false);
 
-  // Practice badge on title
+  // Puzzle number & practice badge on title
   const h1 = document.querySelector('header h1');
   const badge = h1.querySelector('.practice-badge');
+  const numEl = document.getElementById('puzzle-num');
   if (state.isPractice) {
     if (!badge) h1.insertAdjacentHTML('beforeend', '<span class="practice-badge">практика</span>');
+    numEl.textContent = '';
   } else {
     if (badge) badge.remove();
+    numEl.textContent = `#${state.puzzleIndex + 1}`;
   }
 
   // Board
@@ -570,6 +583,13 @@ function bindEvents() {
 
   // Dark mode toggle
   document.getElementById('toggle-dark-mode').onchange = e => saveTheme(e.target.checked);
+
+  // Swap keys toggle
+  document.getElementById('toggle-swap-keys').checked = loadSwapKeys();
+  document.getElementById('toggle-swap-keys').onchange = e => {
+    saveSwapKeys(e.target.checked);
+    buildKeyboard();
+  };
 
   // Privacy modal
   document.getElementById('btn-privacy').onclick = () => openModal('privacy');
