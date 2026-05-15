@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import {
   evaluate, satisfies, constraintError, countValid, deterministicShuffle,
-  UNDOS_NORMAL, UNDOS_HARD,
+  UNDOS_NORMAL, UNDOS_HARD, MAX_GUESSES_NORMAL, MAX_GUESSES_HARD,
 } from '../js/logic.js';
 
 // Сокращения для удобочитаемости
@@ -249,11 +249,19 @@ describe('deterministicShuffle', () => {
 // Константы режимов
 // ─────────────────────────────────────────────────────────────────────────────
 describe('константы', () => {
+  it('нормальный режим — 5 попыток', () => {
+    expect(MAX_GUESSES_NORMAL).toBe(5);
+  });
+
+  it('сложный режим — 6 попыток', () => {
+    expect(MAX_GUESSES_HARD).toBe(6);
+  });
+
   it('нормальный режим — 5 отмен', () => {
     expect(UNDOS_NORMAL).toBe(5);
   });
 
-  it('хард-мод — 2 отмены', () => {
+  it('сложный режим — 2 отмены', () => {
     expect(UNDOS_HARD).toBe(2);
   });
 });
@@ -269,7 +277,7 @@ describe('игровые сценарии', () => {
     expect(guess === target).toBe(true);
   });
 
-  it('survived: 6 ходов без угадывания — валидные слова остаются', () => {
+  it('survived: 6 ходов без угадывания (сложный режим) — валидные слова остаются', () => {
     const target = 'гроза';
     const guesses     = ['вилки', 'фонды', 'шепот', 'трубы', 'зажим', 'песок'];
     const evaluations = guesses.map(g => evaluate(g, target));
