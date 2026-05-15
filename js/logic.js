@@ -34,13 +34,15 @@ export function satisfies(word, guesses, evaluations) {
   for (let gi = 0; gi < guesses.length; gi++) {
     const g = guesses[gi], ev = evaluations[gi];
     const info = {};
+    const hasAbsent = new Set();
     for (let i = 0; i < WORD_LEN; i++) {
       const c = g[i], e = ev[i];
       if (!info[c]) info[c] = { min: 0, exact: null, badPos: [] };
       if (e === 'correct') { info[c].min++; }
       else if (e === 'present') { info[c].min++; info[c].badPos.push(i); }
-      else { info[c].exact = info[c].min; }
+      else { hasAbsent.add(c); }
     }
+    for (const c of hasAbsent) info[c].exact = info[c].min;
     for (let i = 0; i < WORD_LEN; i++) {
       const c = g[i], e = ev[i];
       if (e === 'correct' && word[i] !== c) return false;
@@ -67,12 +69,14 @@ export function constraintError(word, guesses, evaluations) {
         return `Буква ${c.toUpperCase()} не может стоять на позиции ${i + 1}`;
     }
     const info = {};
+    const hasAbsent = new Set();
     for (let i = 0; i < WORD_LEN; i++) {
       const c = g[i], e = ev[i];
       if (!info[c]) info[c] = { min: 0, exact: null };
       if (e === 'correct' || e === 'present') info[c].min++;
-      else info[c].exact = info[c].min;
+      else hasAbsent.add(c);
     }
+    for (const c of hasAbsent) info[c].exact = info[c].min;
     for (const [c, v] of Object.entries(info)) {
       const cnt = [...word].filter(x => x === c).length;
       if (cnt < v.min)
