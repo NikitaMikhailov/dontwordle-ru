@@ -100,6 +100,30 @@ describe('satisfies', () => {
     expect(satisfies('грота', gs, es)).toBe(true);   // г[0]✓, р не pos 2✓, о не pos 1✓, к=0✓, а[4]✓
   });
 
+  it('регрессия: absent до correct для одной буквы — юноша не отбрасывается', () => {
+    // Баг: "пачка" vs "юноша" → а absent на pos 1, а correct на pos 4.
+    // Старый код ставил exact=0 в момент обработки absent, ещё до того как
+    // встретил correct → exact=0 при min=1 → "юноша" (1 буква а) ошибочно отбрасывалась.
+    const gs = ['дуэль', 'пачка'];
+    const es = [
+      evaluate('дуэль', 'юноша'),  // все absent
+      evaluate('пачка', 'юноша'),  // [A,A,A,A,C]
+    ];
+    expect(satisfies('юноша', gs, es)).toBe(true);
+  });
+
+  it('регрессия: absent после correct для одной буквы — exact корректен', () => {
+    // Зеркальный случай: correct идёт раньше absent в одной угадке.
+    // "апачк" — а correct на pos 0, а absent на pos 1 (если бы такое слово было).
+    // Используем evaluate чтобы получить честную оценку.
+    // target "астра": а на pos 0, а на pos 4 — но в "аала?" а correct[0], а absent[1], а present/absent...
+    // Проще: target "абвгд", guess "ааxyz" → а correct[0], а absent[1] → exact=1.
+    const gs = ['ааxyz'];
+    const es = [[C, A, A, A, A]];  // а[0]=correct, а[1]=absent → exact(а)=1
+    expect(satisfies('абвгд', gs, es)).toBe(true);   // 1 буква а ✓
+    expect(satisfies('аабвг', gs, es)).toBe(false);  // 2 буквы а, exact=1 → нарушение
+  });
+
   it('точный счёт (exact) через три экземпляра одной буквы', () => {
     // target банка (2 «а»), guess ааван = а,а,в,а,н
     // evaluations: [P, C, A, A, P]
@@ -165,6 +189,17 @@ describe('constraintError', () => {
     // о должна встречаться минимум 1 раз, в "гтута" её нет
     const err = constraintError('гтута', gs, es);
     expect(err).toMatch(/О.*минимум 1/);
+  });
+
+  it('регрессия: absent до correct для одной буквы — не блокирует валидное слово', () => {
+    // Тот же баг в constraintError: "юноша" не должна получать ошибку
+    // после ходов "дуэль" и "пачка".
+    const gs = ['дуэль', 'пачка'];
+    const es = [
+      evaluate('дуэль', 'юноша'),
+      evaluate('пачка', 'юноша'),
+    ];
+    expect(constraintError('юноша', gs, es)).toBeNull();
   });
 
   it('нарушение точного количества (много)', () => {
