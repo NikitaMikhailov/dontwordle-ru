@@ -1,7 +1,7 @@
 import { WORD_LEN, MAX_GUESSES_NORMAL, MAX_GUESSES_HARD, UNDOS_NORMAL, UNDOS_HARD,
          deterministicShuffle, evaluate, satisfies,
          constraintError, countValid,
-       } from './logic.js';
+       } from './logic.js?v=__BUILD_HASH__';
 
 // ── Safe localStorage (some WebViews throw SecurityError) ─────────────────
 const store = {
