@@ -1,6 +1,9 @@
 services:
   web:
-    build: .
+    build:
+      context: .
+      args:
+        BUILD_HASH: ${BUILD_HASH:-dev}
     restart: always
     ports:
       - "127.0.0.1:8081:80"
