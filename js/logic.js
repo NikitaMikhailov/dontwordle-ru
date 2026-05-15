@@ -1,5 +1,6 @@
-export const WORD_LEN    = 5;
-export const MAX_GUESSES = 6;
+export const WORD_LEN           = 5;
+export const MAX_GUESSES_NORMAL = 5;
+export const MAX_GUESSES_HARD   = 6;
 export const UNDOS_NORMAL = 5;
 export const UNDOS_HARD   = 2;
 
