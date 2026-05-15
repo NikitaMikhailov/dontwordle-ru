@@ -16,8 +16,7 @@ const STORE_GAME     = 'nevordl_game';
 const STORE_PRACTICE = 'nevordl_practice';
 const STORE_STATS    = 'nevordl_stats';
 
-// Яндекс.Метрика: установи ID после регистрации счётчика, затем раскомментируй скрипт в index.html
-const METRIKA_ID = null;
+const METRIKA_ID = 109237777;
 
 function track(goal, params) {
   if (METRIKA_ID && typeof ym !== 'undefined') {
