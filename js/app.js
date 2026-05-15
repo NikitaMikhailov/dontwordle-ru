@@ -10,7 +10,7 @@ const store = {
 };
 
 // ── Constants ──────────────────────────────────────────────────────────────
-const WORDS_URL   = 'data/words.json';
+const WORDS_URL   = 'data/words.json?v=__BUILD_HASH__';
 const START_DATE  = new Date('2026-05-14T00:00:00');
 const STORE_GAME     = 'nevordl_game';
 const STORE_PRACTICE = 'nevordl_practice';
