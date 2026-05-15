@@ -503,6 +503,8 @@ function shareResult() {
     lines.push(ev.map(e => emoji[e]).join(''));
   }
   lines.push(`Отмен использовано: ${(state.hardMode ? UNDOS_HARD : UNDOS_NORMAL) - state.undosLeft}`);
+  lines.push('');
+  lines.push('Попробуй не угадать: https://dontwordle.ru');
   const text = lines.join('\n');
   navigator.clipboard.writeText(text).then(() => toast('Скопировано!')).catch(() => toast('Не удалось скопировать'));
 }
