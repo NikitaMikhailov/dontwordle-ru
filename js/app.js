@@ -16,6 +16,15 @@ const STORE_GAME     = 'nevordl_game';
 const STORE_PRACTICE = 'nevordl_practice';
 const STORE_STATS    = 'nevordl_stats';
 
+// Яндекс.Метрика: установи ID после регистрации счётчика, затем раскомментируй скрипт в index.html
+const METRIKA_ID = null;
+
+function track(goal, params) {
+  if (METRIKA_ID && typeof ym !== 'undefined') {
+    ym(METRIKA_ID, 'reachGoal', goal, params || {});
+  }
+}
+
 const KB_ROWS = [
   ['й','ц','у','к','е','н','г','ш','щ','з','х','ъ'],
   ['ф','ы','в','а','п','р','о','л','д','ж','э','ё'],
@@ -180,6 +189,7 @@ async function submitGuess() {
   const err = constraintError(word, state.guesses, state.evaluations);
   if (err) { shakRow(state.guesses.length); toast(err); return; }
 
+  const isFirstGuess = state.guesses.length === 0;
   const ev     = evaluate(word, state.target);
   const rowIdx = state.guesses.length;
 
@@ -187,12 +197,17 @@ async function submitGuess() {
   state.evaluations.push(ev);
   state.current = '';
 
+  if (isFirstGuess && !state.isPractice) track('game_start', { hard_mode: state.hardMode });
+
   await flipRow(rowIdx, word, ev);
   updateKeyColors();
 
   if (word === state.target) {
     state.status = 'wordled';
-    if (!state.isPractice) recordResult('wordled');
+    if (!state.isPractice) {
+      recordResult('wordled');
+      track('game_end', { result: 'wordled', guesses: state.guesses.length, hard_mode: state.hardMode });
+    }
     saveState();
     render();
     if (!state.isPractice) setTimeout(() => openModal('stats'), 1800);
@@ -204,10 +219,16 @@ async function submitGuess() {
   const guessesLeft = maxGuesses - state.guesses.length;
   if (state.guesses.length >= maxGuesses) {
     state.status = 'survived';
-    if (!state.isPractice) recordResult('survived');
+    if (!state.isPractice) {
+      recordResult('survived');
+      track('game_end', { result: 'survived', guesses: state.guesses.length, hard_mode: state.hardMode });
+    }
   } else if (valid < guessesLeft) {
     state.status = 'eliminated';
-    if (!state.isPractice) recordResult('eliminated');
+    if (!state.isPractice) {
+      recordResult('eliminated');
+      track('game_end', { result: 'eliminated', guesses: state.guesses.length, words_left: valid, hard_mode: state.hardMode });
+    }
   }
 
   saveState();
@@ -507,6 +528,7 @@ function shareResult() {
   lines.push('');
   lines.push('Попробуй не угадать: https://dontwordle.ru');
   const text = lines.join('\n');
+  track('share', { result: state.status });
   navigator.clipboard.writeText(text).then(() => toast('Скопировано!')).catch(() => toast('Не удалось скопировать'));
 }
 

@@ -4,7 +4,65 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Не вордли — ежедневная игра со словами</title>
+  <link rel="canonical" href="https://dontwordle.ru/">
+
+  <!-- SEO -->
   <meta name="description" content="Не вордли — бесплатная ежедневная игра со словами. Как Вордли, но цель — НЕ угадать загаданное слово. Пять попыток, чтобы выжить.">
+  <meta name="robots" content="index, follow">
+
+  <!-- Open Graph (VK, Telegram, WhatsApp) -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://dontwordle.ru/">
+  <meta property="og:title" content="Не вордли — угадай слово, но не угадай">
+  <meta property="og:description" content="Ежедневная словесная игра на русском. Введи 5-буквенное слово, но не угадай загаданное. Попытайся выжить!">
+  <meta property="og:image" content="https://dontwordle.ru/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:locale" content="ru_RU">
+  <meta property="og:site_name" content="Не вордли">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Не вордли — угадай слово, но не угадай">
+  <meta name="twitter:description" content="Ежедневная словесная игра на русском. Введи 5-буквенное слово, но не угадай загаданное.">
+  <meta name="twitter:image" content="https://dontwordle.ru/og-image.png">
+
+  <!-- JSON-LD: разметка для поисковиков -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Не вордли",
+    "url": "https://dontwordle.ru/",
+    "description": "Ежедневная словесная игра на русском. Цель — НЕ угадать загаданное 5-буквенное слово за 5 попыток.",
+    "applicationCategory": "GameApplication",
+    "operatingSystem": "Any",
+    "inLanguage": "ru",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "RUB"
+    },
+    "author": {
+      "@type": "Person",
+      "name": "Никита Михайлов"
+    }
+  }
+  </script>
+
+  <!-- Яндекс.Метрика — раскомментировать и заменить XXXXXXXX на ID счётчика -->
+  <!--
+  <script type="text/javascript">
+    (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+    m[i].l=1*new Date();
+    for(var j=0;j<document.scripts.length;j++){if(document.scripts[j].src===r){return;}}
+    k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+    (window,document,"script","https://mc.yandex.ru/metrika/tag.js","ym");
+    ym(XXXXXXXX,"init",{clickmap:true,trackLinks:true,accurateTrackBounce:true,webvisor:true});
+  </script>
+  <noscript><div><img src="https://mc.yandex.ru/watch/XXXXXXXX" style="position:absolute;left:-9999px;" alt=""/></div></noscript>
+  -->
+
   <link rel="stylesheet" href="style.css?v=__BUILD_HASH__">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%236aaa64'/><text x='16' y='23' text-anchor='middle' font-family='system-ui,sans-serif' font-size='20' font-weight='700' fill='white'>Н</text></svg>">
 </head>
@@ -184,9 +242,8 @@
         <button class="modal-close" data-close="privacy">✕</button>
       </div>
       <div class="modal-body">
-        <p>«Не вордли» не собирает и не передаёт никакие персональные данные.</p>
         <p>Игровое состояние и статистика хранятся исключительно в <strong>localStorage</strong> вашего браузера — на устройстве, без отправки на сервер.</p>
-        <p>Сайт не использует аналитику, трекеры и сторонние скрипты.</p>
+        <p>Сайт использует <strong>Яндекс.Метрику</strong> для анонимной статистики посещений (количество игроков, частота игр). Данные обезличены и не позволяют идентифицировать личность. Подробнее: <a href="https://yandex.ru/legal/confidential/" target="_blank" rel="noopener">политика Яндекса</a>.</p>
         <p>По любым вопросам пишите:<br>
           <a href="mailto:mikhailov_nikita1997@icloud.com">mikhailov_nikita1997@icloud.com</a><br>
           <a href="https://t.me/Nikita_Bear" target="_blank" rel="noopener">@Nikita_Bear</a> в Telegram
