@@ -29,5 +29,5 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             sudo git -C /var/www/dontwordle.ru pull origin main
-            cd /var/www/dontwordle.ru && docker compose up --build -d
+            cd /var/www/dontwordle.ru && BUILD_HASH=$(git rev-parse --short HEAD) docker compose up --build -d
             docker image prune -f
