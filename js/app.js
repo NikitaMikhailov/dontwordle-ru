@@ -201,10 +201,11 @@ async function submitGuess() {
 
   const valid = countValid(words, state.target, state.guesses, state.evaluations);
   const maxGuesses = state.hardMode ? MAX_GUESSES_HARD : MAX_GUESSES_NORMAL;
+  const guessesLeft = maxGuesses - state.guesses.length;
   if (state.guesses.length >= maxGuesses) {
     state.status = 'survived';
     if (!state.isPractice) recordResult('survived');
-  } else if (valid === 0) {
+  } else if (valid < guessesLeft) {
     state.status = 'eliminated';
     if (!state.isPractice) recordResult('eliminated');
   }
