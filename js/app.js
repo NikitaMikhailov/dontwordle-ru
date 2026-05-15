@@ -1,4 +1,4 @@
-import { WORD_LEN, MAX_GUESSES, UNDOS_NORMAL, UNDOS_HARD,
+import { WORD_LEN, MAX_GUESSES_NORMAL, MAX_GUESSES_HARD, UNDOS_NORMAL, UNDOS_HARD,
          deterministicShuffle, evaluate, satisfies,
          constraintError, countValid,
        } from './logic.js';
@@ -35,9 +35,9 @@ async function init() {
   words   = deterministicShuffle(raw, 1337);
   wordSet = new Set(words);
 
+  loadState();
   buildBoard();
   buildKeyboard();
-  loadState();
   bindEvents();
   render();
 }
@@ -200,7 +200,8 @@ async function submitGuess() {
   }
 
   const valid = countValid(words, state.target, state.guesses, state.evaluations);
-  if (state.guesses.length >= MAX_GUESSES) {
+  const maxGuesses = state.hardMode ? MAX_GUESSES_HARD : MAX_GUESSES_NORMAL;
+  if (state.guesses.length >= maxGuesses) {
     state.status = 'survived';
     if (!state.isPractice) recordResult('survived');
   } else if (valid === 0) {
@@ -265,9 +266,11 @@ function playAgain() {
 
 // ── Board ──────────────────────────────────────────────────────────────────
 function buildBoard() {
+  const maxGuesses = state.hardMode ? MAX_GUESSES_HARD : MAX_GUESSES_NORMAL;
   const board = document.getElementById('board');
   board.innerHTML = '';
-  for (let r = 0; r < MAX_GUESSES; r++) {
+  board.style.gridTemplateRows = `repeat(${maxGuesses}, var(--ts))`;
+  for (let r = 0; r < maxGuesses; r++) {
     for (let c = 0; c < WORD_LEN; c++) {
       const tile = document.createElement('div');
       tile.className = 'tile';
