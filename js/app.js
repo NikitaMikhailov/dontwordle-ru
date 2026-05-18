@@ -222,7 +222,7 @@ async function submitGuess() {
       recordResult('survived');
       track('game_end', { result: 'survived', guesses: state.guesses.length, hard_mode: state.hardMode });
     }
-  } else if (valid < guessesLeft) {
+  } else if (valid < guessesLeft && state.undosLeft === 0) {
     state.status = 'eliminated';
     if (!state.isPractice) {
       recordResult('eliminated');
