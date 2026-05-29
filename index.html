@@ -51,6 +51,32 @@
   }
   </script>
 
+  <!-- FAQPage schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Как играть в Не Вордли?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Угадывайте слова за 5 попыток, избегая загаданного слова. Используйте цветовые подсказки, чтобы сузить варианты — и выжить."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Не Вордли — бесплатная игра?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Да, полностью бесплатно. Каждый день новое слово, без регистрации."
+        }
+      }
+    ]
+  }
+  </script>
+
   <!-- Yandex.Metrika counter -->
   <script type="text/javascript">
     (function(m,e,t,r,i,k,a){
@@ -69,6 +95,7 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%236aaa64'/><text x='16' y='23' text-anchor='middle' font-family='system-ui,sans-serif' font-size='20' font-weight='700' fill='white'>Н</text></svg>">
 </head>
 <body>
+  <p class="seo-description">Не Вордли — бесплатная ежедневная игра со словами. Угадай слово за 5 попыток, но НЕ называй загаданное слово — иначе проиграешь. Новая задача каждый день.</p>
   <header>
     <div class="header-inner">
       <button class="icon-btn" id="btn-how-to-play" title="Как играть">
@@ -119,7 +146,7 @@
     <div class="modal" role="dialog" aria-modal="true">
       <div class="modal-header">
         <h2>Как играть</h2>
-        <button class="modal-close" data-close="how-to-play">✕</button>
+        <button class="modal-close" data-close="how-to-play" aria-label="Закрыть"><span aria-hidden="true">✕</span></button>
       </div>
       <div class="modal-body">
         <p>Не вордли — это Вордли наоборот. Цель — <strong>НЕ угадать</strong> загаданное 5-буквенное слово за 5 попыток (6 в сложном режиме).</p>
@@ -156,7 +183,7 @@
     <div class="modal" role="dialog" aria-modal="true">
       <div class="modal-header">
         <h2>Статистика</h2>
-        <button class="modal-close" data-close="stats">✕</button>
+        <button class="modal-close" data-close="stats" aria-label="Закрыть"><span aria-hidden="true">✕</span></button>
       </div>
       <div class="modal-body">
         <div id="stats-grid">
@@ -187,7 +214,7 @@
     <div class="modal" role="dialog" aria-modal="true">
       <div class="modal-header">
         <h2>Настройки</h2>
-        <button class="modal-close" data-close="settings">✕</button>
+        <button class="modal-close" data-close="settings" aria-label="Закрыть"><span aria-hidden="true">✕</span></button>
       </div>
       <div class="modal-body">
         <div class="setting-row">
@@ -241,7 +268,7 @@
     <div class="modal" role="dialog" aria-modal="true">
       <div class="modal-header">
         <h2>Конфиденциальность</h2>
-        <button class="modal-close" data-close="privacy">✕</button>
+        <button class="modal-close" data-close="privacy" aria-label="Закрыть"><span aria-hidden="true">✕</span></button>
       </div>
       <div class="modal-body">
         <p>Игровое состояние и статистика хранятся исключительно в <strong>localStorage</strong> вашего браузера — на устройстве, без отправки на сервер.</p>
