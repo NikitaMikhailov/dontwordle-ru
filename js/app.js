@@ -529,7 +529,33 @@ function shareResult() {
   lines.push('Попробуй не угадать: https://dontwordle.ru');
   const text = lines.join('\n');
   track('share', { result: state.status });
-  navigator.clipboard.writeText(text).then(() => toast('Скопировано!')).catch(() => toast('Не удалось скопировать'));
+  if (navigator.share) {
+    navigator.share({ text }).catch(() => copyToClipboard(text));
+  } else {
+    copyToClipboard(text);
+  }
+}
+
+function copyToClipboard(text) {
+  if (navigator.clipboard?.writeText) {
+    navigator.clipboard.writeText(text)
+      .then(() => toast('Скопировано!'))
+      .catch(() => copyFallback(text));
+  } else {
+    copyFallback(text);
+  }
+}
+
+function copyFallback(text) {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.cssText = 'position:fixed;opacity:0;top:0;left:0;width:2em;height:2em';
+  document.body.appendChild(ta);
+  ta.focus();
+  ta.select();
+  const ok = document.execCommand('copy');
+  ta.remove();
+  toast(ok ? 'Скопировано!' : 'Не удалось скопировать');
 }
 
 // ── Stats modal ────────────────────────────────────────────────────────────
