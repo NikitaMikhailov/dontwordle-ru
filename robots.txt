@@ -3,4 +3,16 @@ Allow: /
 Disallow: /data/
 Disallow: /scripts/
 
+User-agent: facebookexternalhit
+Allow: /
+
+User-agent: Twitterbot
+Allow: /
+
+User-agent: TelegramBot
+Allow: /
+
+User-agent: vkShare
+Allow: /
+
 Sitemap: https://dontwordle.ru/sitemap.xml
