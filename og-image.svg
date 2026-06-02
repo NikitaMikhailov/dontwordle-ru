@@ -1,8 +1,8 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
-  <rect width="1200" height="630" fill="#121213"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <rect width="400" height="400" fill="#121213"/>
 
-  <!-- Tile grid icon (2x2 + 1) centered at top -->
-  <g transform="translate(504, 140)">
+  <!-- 2x2 tile grid centered -->
+  <g transform="translate(100, 80)">
     <rect x="0"   y="0"   width="88" height="88" rx="10" fill="#3a3a3c"/>
     <rect x="104" y="0"   width="88" height="88" rx="10" fill="#538d4e"/>
     <rect x="0"   y="104" width="88" height="88" rx="10" fill="#b59f3b"/>
@@ -10,11 +10,8 @@
   </g>
 
   <!-- Title -->
-  <text x="600" y="410" text-anchor="middle" font-family="system-ui,sans-serif" font-size="86" font-weight="800" fill="white">Не вордли</text>
-
-  <!-- Subtitle -->
-  <text x="600" y="468" text-anchor="middle" font-family="system-ui,sans-serif" font-size="32" fill="#818384">Угадай слово, но НЕ угадай</text>
+  <text x="200" y="310" text-anchor="middle" font-family="system-ui,sans-serif" font-size="52" font-weight="800" fill="white">Не вордли</text>
 
   <!-- URL -->
-  <text x="600" y="570" text-anchor="middle" font-family="system-ui,sans-serif" font-size="28" fill="#538d4e">dontwordle.ru</text>
+  <text x="200" y="368" text-anchor="middle" font-family="system-ui,sans-serif" font-size="24" fill="#538d4e">dontwordle.ru</text>
 </svg>
