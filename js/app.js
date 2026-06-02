@@ -520,7 +520,8 @@ function shareResult() {
   const statusText = { survived: 'ВЫЖИЛ', wordled: 'ВОРДЛНУЛ', eliminated: 'ВЫБЫЛ' };
   const emoji = { correct: '🟩', present: '🟨', absent: '⬜' };
   const label = state.isPractice ? 'практика' : `#${state.puzzleIndex + 1}`;
-  const lines = [`Не вордли ${label} — ${statusText[state.status] || ''}`];
+  const hardTag = state.hardMode ? ' 🔥 Хард-мод' : '';
+  const lines = [`Не вордли ${label} — ${statusText[state.status] || ''}${hardTag}`];
   for (const ev of state.evaluations) {
     lines.push(ev.map(e => emoji[e]).join(''));
   }
