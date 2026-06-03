@@ -10,7 +10,7 @@
   </g>
 
   <!-- Title -->
-  <text x="200" y="310" text-anchor="middle" font-family="system-ui,sans-serif" font-size="52" font-weight="800" fill="white">Не вордли</text>
+  <text x="200" y="310" text-anchor="middle" font-family="system-ui,sans-serif" font-size="44" font-weight="800" fill="white">Не вордли</text>
 
   <!-- URL -->
   <text x="200" y="368" text-anchor="middle" font-family="system-ui,sans-serif" font-size="24" fill="#538d4e">dontwordle.ru</text>
