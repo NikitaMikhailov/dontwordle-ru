@@ -1,8 +1,12 @@
 # Не вордли (Don't Wordle RU)
 
+[![Live](https://img.shields.io/badge/live-dontwordle.ru-2ea44f)](https://dontwordle.ru)
+[![Tests](https://github.com/NikitaMikhailov/dontwordle-ru/actions/workflows/deploy.yml/badge.svg)](https://github.com/NikitaMikhailov/dontwordle-ru/actions/workflows/deploy.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 Russian-language clone of [DontWordle](https://dontwordle.com). A daily word game where the goal is to **not** guess the secret 5-letter word.
 
-**Live:** [dontwordle.ru](https://dontwordle.ru)
+**Play now:** [dontwordle.ru](https://dontwordle.ru)
 
 ## Game mechanics
 
@@ -65,9 +69,9 @@ node --experimental-vm-modules node_modules/.bin/jest
 
 ## Deployment
 
-Push to `main` triggers GitHub Actions → SSH into production server → `sudo nevordli-update` (git pull + chown).
+Push to `main` triggers GitHub Actions → SSH into production server → `sudo dontwordle-update` (git pull + `docker compose up --build -d`).
 
-**Server:** Ubuntu 20.04, nginx, Let's Encrypt SSL  
+**Server:** Ubuntu, nginx reverse proxy, Docker, Let's Encrypt SSL  
 **Webroot:** `/var/www/dontwordle.ru`
 
 ## Analytics & SEO
@@ -77,3 +81,7 @@ Push to `main` triggers GitHub Actions → SSH into production server → `sudo 
 - Open Graph + Twitter Card meta tags
 - JSON-LD `WebApplication` schema
 - Sitemap: [dontwordle.ru/sitemap.xml](https://dontwordle.ru/sitemap.xml)
+
+## Sister project
+
+[Chainle](https://chainle.ru) ([source](https://github.com/NikitaMikhailov/chainle-ru)) — a daily math puzzle game by the same author, same infra.
