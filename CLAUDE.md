@@ -41,10 +41,9 @@ python3 -m http.server 3456
 
 ## Продакшн сервер
 
+Данные для SSH-доступа (IP, порт, логин) не хранятся в репозитории — см. приватные заметки/менеджер паролей.
+
 - **Домен:** https://dontwordle.ru
-- **IP:** [REDACTED-SERVER-IP]
-- **SSH порт:** [REDACTED-SERVER-PORT]
-- **Пользователь:** [REDACTED-SERVER-USER]
 - **ОС:** Ubuntu 20.04 LTS
 - **Webroot:** `/var/www/dontwordle.ru`
 - **nginx конфиг:** `/etc/nginx/sites-available/dontwordle.ru`
@@ -58,10 +57,10 @@ Workflow: `.github/workflows/deploy.yml`
 Триггер: push в `main` → SSH на сервер → `sudo nevordli-update` (git pull + chown)
 
 **Secrets в репозитории** (Settings → Secrets → Actions):
-- `SSH_HOST` = `[REDACTED-SERVER-IP]`
-- `SSH_PORT` = `[REDACTED-SERVER-PORT]`
-- `SSH_USER` = `[REDACTED-SERVER-USER]`
-- `SSH_PRIVATE_KEY` = приватный ed25519 ключ
+- `SSH_HOST` — IP сервера
+- `SSH_PORT` — SSH порт
+- `SSH_USER` — имя пользователя
+- `SSH_PRIVATE_KEY` — приватный ed25519 ключ
 
 ## Словарь
 
